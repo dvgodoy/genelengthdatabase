@@ -12,7 +12,7 @@ const downloadBtn = document.getElementById("downloadBtn");
 const paginationDiv = document.getElementById("pagination");
 const tableHeaders = document.querySelectorAll("#geneTable th");
 
-const URL_FILE = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/genes.csv";
+const URL_FILE = "https://raw.githubusercontent.com/dvgodoy/genelengthdatabase/refs/heads/main/database/genes.csv";
 const CSV_FILE_NAME = "genes.csv"; // Inside the ZIP
 
 fetch(URL_FILE)
@@ -149,7 +149,7 @@ searchInput.addEventListener("input", filterAndRender);
 
 downloadBtn.addEventListener("click", () => {
   const a = document.createElement("a");
-  a.href = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/gene_length_database.zip";
+  a.href = "https://raw.githubusercontent.com/dvgodoy/genelengthdatabase/refs/heads/main/database/gene_length_database.zip";
   a.download = "gene_length_database.zip";
   a.click();
 });
