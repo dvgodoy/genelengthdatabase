@@ -12,14 +12,12 @@ const downloadBtn = document.getElementById("downloadBtn");
 const paginationDiv = document.getElementById("pagination");
 const tableHeaders = document.querySelectorAll("#geneTable th");
 
-const ZIP_FILE = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/gene_length_database.data";
+const URL_FILE = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/genes.csv";
 const CSV_FILE_NAME = "genes.csv"; // Inside the ZIP
 
-fetch(ZIP_FILE)
-  .then(res => res.arrayBuffer())
-  .then(JSZip.loadAsync)
-  .then(zip => zip.file(CSV_FILE_NAME).async("string"))
-  .then(csv => {
+fetch(URL_FILE)
+  .then((res) => res.text())
+  .then((csv) => {
     const lines = csv.trim().split("\n");
     const rows = lines.slice(3); // skip header
     allData = rows.map(r => {
@@ -151,7 +149,7 @@ searchInput.addEventListener("input", filterAndRender);
 
 downloadBtn.addEventListener("click", () => {
   const a = document.createElement("a");
-  a.href = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/gene_length_database.data";
+  a.href = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/gene_length_database.zip";
   a.download = "gene_length_database.zip";
   a.click();
 });
