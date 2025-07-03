@@ -12,7 +12,7 @@ const downloadBtn = document.getElementById("downloadBtn");
 const paginationDiv = document.getElementById("pagination");
 const tableHeaders = document.querySelectorAll("#geneTable th");
 
-const ZIP_FILE = "gene_length_database.zip";
+const ZIP_FILE = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/gene_length_database.zip";
 const CSV_FILE_NAME = "genes.csv"; // Inside the ZIP
 
 fetch(ZIP_FILE)
@@ -151,7 +151,7 @@ searchInput.addEventListener("input", filterAndRender);
 
 downloadBtn.addEventListener("click", () => {
   const a = document.createElement("a");
-  a.href = "gene_length_database.zip";
+  a.href = "https://github.com/dvgodoy/genelengthdatabase/raw/refs/heads/main/database/gene_length_database.zip";
   a.download = "gene_length_database.zip";
   a.click();
 });
