@@ -12,11 +12,13 @@ const downloadBtn = document.getElementById("downloadBtn");
 const paginationDiv = document.getElementById("pagination");
 const tableHeaders = document.querySelectorAll("#geneTable th");
 
-const URL_FILE = "https://raw.githubusercontent.com/dvgodoy/genelengthdatabase/refs/heads/main/database/genes.csv";
+const ZIP_FILE = "database/gene_length_database.zip";
 const CSV_FILE_NAME = "genes.csv"; // Inside the ZIP
 
-fetch(URL_FILE)
-  .then((res) => res.text())
+fetch(ZIP_FILE)
+  .then(res => res.arrayBuffer())
+  .then(JSZip.loadAsync)
+  .then(zip => zip.file(CSV_FILE_NAME).async("string"))
   .then((csv) => {
     const lines = csv.trim().split("\n");
     const rows = lines.slice(3); // skip header
