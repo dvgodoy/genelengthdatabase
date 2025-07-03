@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <link rel="canonical" href="https://yourusername.github.io/your-repo/" />
+  <!-- Basic SEO -->
+  <title>Human Gene Length Database – Transcript Statistics & Exon Metrics</title>
+  <meta name="description" content="Explore human gene lengths, transcript counts, and exon statistics in a sortable, searchable gene database. Includes merged, mean, median, and max transcript lengths.">
+  <meta name="keywords" content="human genes, gene lengths, transcript statistics, merged length, mean length, median length, max exon length, gene browser, human genome, exon database">
+  <meta name="author" content="Daniel Godoy">
+
+  <!-- Open Graph (for social sharing) -->
+  <meta property="og:title" content="Human Gene Length Browser" />
+  <meta property="og:description" content="A lightweight interactive table of human genes with transcript and exon length statistics." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourusername.github.io/your-repo/" />
+  <meta property="og:image" content="https://yourusername.github.io/your-repo/thumbnail.png" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Human Gene Length Database" />
+  <meta name="twitter:description" content="Browse human gene and transcript lengths with filtering, sorting, and CSV download." />
+  <meta name="twitter:image" content="https://yourusername.github.io/your-repo/thumbnail.png">  
+</head>
+<body>
+  <h1>Human Gene Length Database</h1>
+
+  <p>
+    Browse a searchable list of human genes with transcript counts and exon-based length statistics, including merged, mean, median, and maximum values.
+  </p>
+
+  <p>
+    Built using <a href="https://www.gencodegenes.org/human/release_36.html" target="_blank">GENCODEv36</a>&#39;s <a href="https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.basic.annotation.gtf.gz" target="_blank">basic annotation GTF file</a> (accessed July 2nd, 2025).    
+  </p>
+
+  <div class="controls">
+    <label>
+      Chromosome:
+      <select id="chromosomeFilter">
+        <option value="">Select...</option>
+      </select>
+    </label>
+
+    <label>
+      Search:
+      <input type="text" id="searchInput" placeholder="Gene ID or Name"/>
+    </label>
+
+    <button id="downloadBtn">Download All</button>
+  </div>
+
+  <div id="pagination" class="pagination"></div>
+
+  <div class="table-container">
+    <table id="geneTable">
+      <thead>
+        <tr>
+          <th data-col="seq">#</th>
+          <th data-col="chromosome">Chromosome</th>
+          <th data-col="geneID">Gene ID</th>
+          <th data-col="geneName">Gene Name</th>
+          <th data-col="transcripts"># Transcripts</th>
+          <th data-col="mergedLength" title="Total span of all unique exonic regions across all transcripts (overlapping exons counted once)">Merged Length</th>
+          <th data-col="meanLength" title="Average total exon length per transcript">Mean Length</th>
+          <th data-col="medianLength" title="Middle value of transcript exon lengths">Median Length</th>
+          <th data-col="maxLength" title="Longest exon span among all transcripts for the gene">Max Length</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <footer class="footer">
+    <p>
+      © 2025 Daniel Godoy —
+      <a href="https://dvgodoy.com" target="_blank">Website</a> |
+      <a href="https://github.com/dvgodoy" target="_blank">GitHub</a> |
+      <a href="https://linkedin.com/in/dvgodoy" target="_blank">LinkedIn</a> |
+      <a href="https://x.com/dvgodoy" target="_blank">X</a>
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
