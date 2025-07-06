@@ -23,12 +23,14 @@ fetch(ZIP_FILE)
     const lines = csv.trim().split("\n");
     const rows = lines.slice(3); // skip header
     allData = rows.map(r => {
-      const [seq, chromosome, geneID, geneName, t, ml, mean, med, max] = r.split(",");
+      const [sq, chromosome, geneID, geneName, geneType, st, t, ml, mean, med, max] = r.split(",");
       return {
-        seq,
+        seq: +sq,
         chromosome,
         geneID,
         geneName,
+        geneType,
+        start: +st,
         transcripts: +t,
         mergedLength: +ml,
         meanLength: +mean,
@@ -36,13 +38,12 @@ fetch(ZIP_FILE)
         maxLength: +max
       };
     });
-
     populateChromosomeFilter();
   });
 
 function populateChromosomeFilter() {
   const chromosomes = Array.from(
-    new Set(allData.map(d => d.chromosome))
+    new Set(allData.map(d => d.chromosome)).add("All")
   ).sort((a, b) => {
     if (!isNaN(a) && !isNaN(b)) return +a - +b;
     if (a === "X") return 1e6;
@@ -50,6 +51,8 @@ function populateChromosomeFilter() {
     if (a === "Y") return 1e7;
     if (b === "Y") return -1e7;
     if (a.toUpperCase().startsWith("M")) return 1e8;
+    if (b.toUpperCase().startsWith("M")) return -1e8;
+    if (a === "All") return 1e9;
     return a.localeCompare(b);
   });
 
@@ -77,6 +80,8 @@ function renderTable() {
       <td>${row.chromosome}</td>
       <td><a href="https://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${row.geneID}" target="_blank">${row.geneID}</a></td>
       <td>${row.geneName}</td>
+      <td>${row.geneType}</td>
+      <td>${row.start}</td>
       <td>${row.transcripts}</td>
       <td>${row.mergedLength}</td>
       <td>${row.meanLength}</td>
@@ -86,7 +91,10 @@ function renderTable() {
     geneTableBody.appendChild(tr);
   }
 
-  renderPagination();
+  renderPagination(currentPage, (page) => {
+    currentPage = page;
+    renderTable();
+  });
 }
 
 function pad(num, size) {
@@ -95,34 +103,86 @@ function pad(num, size) {
     return num;
 }
 
-function renderPagination() {
+function renderPagination(currentPage, onClick) {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   paginationDiv.innerHTML = "";
 
-  size = totalPages.toString().length;
-  for (let i = 1; i <= totalPages; i++) {
+  function createBtn(label, page, disabled = false) {
     const btn = document.createElement("button");
-    btn.textContent = pad(i, size);
-    if (i === currentPage) {
-      btn.style.fontWeight = "bold";
-    }
-    btn.addEventListener("click", () => {
-      currentPage = i;
-      renderTable();
-    });
+    btn.textContent = label;
+    btn.disabled = disabled;
+    if (!disabled) btn.addEventListener("click", () => onClick(page));
     paginationDiv.appendChild(btn);
   }
+
+  function addPage(page) {
+    const btn = document.createElement("button");
+    btn.textContent = page;
+    btn.className = page === currentPage ? "active" : "";
+    btn.addEventListener("click", () => onClick(page));
+    paginationDiv.appendChild(btn);
+  }
+
+  function addEllipsis() {
+    const span = document.createElement("span");
+    span.textContent = "…";
+    span.className = "ellipsis";
+    paginationDiv.appendChild(span);
+  }
+
+  // Navigation buttons
+  createBtn("« First", 1, currentPage === 1);
+  createBtn("‹ Prev", currentPage - 1, currentPage === 1);
+
+  const pages = [];
+
+  // Always show first page
+  pages.push(1);
+
+  // Left ellipsis
+  if (currentPage > 5) pages.push("...");
+
+  // Middle range
+  for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+    if (i > 1 && i < totalPages) pages.push(i);
+  }
+
+  // Right ellipsis
+  if (currentPage < totalPages - 4) pages.push("...");
+
+  // Always show last page
+  if (totalPages > 1) pages.push(totalPages);
+
+  // Render
+  pages.forEach(p => {
+    if (p === "...") {
+      addEllipsis();
+    } else {
+      addPage(p);
+    }
+  });
+
+  // Navigation buttons
+  createBtn("Next ›", currentPage + 1, currentPage === totalPages);
+  createBtn("Last »", totalPages, currentPage === totalPages);
+
+  // Keyboard nav
+  document.onkeydown = function (e) {
+    if (e.key === "ArrowLeft" && currentPage > 1) onClick(currentPage - 1);
+    if (e.key === "ArrowRight" && currentPage < totalPages) onClick(currentPage + 1);
+  };  
 }
 
 function filterAndRender() {
   const search = searchInput.value.toLowerCase();
 
   filteredData = allData.filter(row => {
-    const matchesChromosome = row.chromosome === currentChromosome;
+    const matchesChromosome = (currentChromosome === "All") || (row.chromosome === currentChromosome);
     const matchesSearch =
       !search ||
       row.geneID.toLowerCase().includes(search) ||
-      row.geneName.toLowerCase().includes(search);
+      row.geneName.toLowerCase().includes(search) ||
+      row.geneType.toLowerCase().includes(search);
     return matchesChromosome && matchesSearch;
   });
 

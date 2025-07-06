@@ -73,3 +73,30 @@ th.sort-desc::after {
 .footer a:hover {
   text-decoration: underline;
 }
+
+#pagination {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+#pagination button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#pagination button.active {
+  font-weight: bold;
+  background-color: #ddd;
+}
+
+#pagination .ellipsis {
+  padding: 0.3rem 0.6rem;
+  color: #666;
+}
